@@ -1,5 +1,4 @@
 <?php
-
 /**
  * A cURL library to fetch a large number of resources while maintaining
  * a consistent number of simultaneous connections
@@ -13,15 +12,10 @@
  * @link https://github.com/chuyskywalker/rolling-curl
  */
 
-namespace RollingCurl;
-
-use RollingCurl\Request;
-
-
 /**
  * Class that holds a rolling queue of curl requests.
  */
-class RollingCurl
+class RollingCurl_Fetcher
 {
 
     /**
@@ -32,7 +26,7 @@ class RollingCurl
     private $simultaneousLimit = 5;
 
     /**
-     * @var \Closure
+     * @var Closure
      *
      * Callback function to be applied to each result.
      */
@@ -95,10 +89,10 @@ class RollingCurl
     /**
      * Add a request to the request queue
      *
-     * @param Request $request
-     * @return RollingCurl
+     * @param RollingCurl_Request $request
+     * @return RollingCurl_Fetcher
      */
-    public function add(Request $request)
+    public function add(RollingCurl_Request $request)
     {
         $this->pendingRequests[] = $request;
 
@@ -113,7 +107,7 @@ class RollingCurl
      * @param array|string $postData
      * @param array $headers
      * @param array $options
-     * @return RollingCurl
+     * @return RollingCurl_Fetcher
      */
     public function request($url, $method = "GET", $postData = null, $headers = null, $options = null)
     {
@@ -136,7 +130,7 @@ class RollingCurl
      * @param string $url
      * @param array $headers
      * @param array $options
-     * @return RollingCurl
+     * @return RollingCurl_Fetcher
      */
     public function get($url, $headers = null, $options = null)
     {
@@ -150,7 +144,7 @@ class RollingCurl
      * @param array|string $postData
      * @param array $headers
      * @param array $options
-     * @return RollingCurl
+     * @return RollingCurl_Fetcher
      */
     public function post($url, $postData = null, $headers = null, $options = null)
     {
@@ -165,7 +159,7 @@ class RollingCurl
      * @param  array       $headers
      * @param  array       $options
      *
-     * @return RollingCurl
+     * @return RollingCurl_Fetcher
      */
     public function put($url, $putData = null, $headers = null, $options = null)
     {
@@ -180,7 +174,7 @@ class RollingCurl
      * @param  array       $headers
      * @param  array       $options
      *
-     * @return RollingCurl
+     * @return RollingCurl_Fetcher
      */
     public function delete($url, $headers = null, $options = null)
     {
@@ -292,10 +286,10 @@ class RollingCurl
     /**
      * Helper function to gather all the curl options: global, inferred, and per request
      *
-     * @param Request $request
+     * @param RollingCurl_Request $request
      * @return array
      */
-    private function prepareRequestOptions(Request $request)
+    private function prepareRequestOptions(RollingCurl_Request $request)
     {
 
         // options for this entire curl object
@@ -342,8 +336,8 @@ class RollingCurl
      *   $request is original request object, but now with body, headers, response code, etc
      *   $rollingCurl is the rolling curl object itself (useful if you want to re/queue a URL)
      *
-     * @param \Closure $callback
-     * @return RollingCurl
+     * @param Closure $callback
+     * @return RollingCurl_Fetcher
      */
     public function setCallback(\Closure $callback)
     {
@@ -352,7 +346,7 @@ class RollingCurl
     }
 
     /**
-     * @return \Closure
+     * @return Closure
      */
     public function getCallback()
     {
@@ -361,13 +355,13 @@ class RollingCurl
 
     /**
      * @param array $headers
-     * @throws \InvalidArgumentException
-     * @return RollingCurl
+     * @throws InvalidArgumentException
+     * @return RollingCurl_Fetcher
      */
     public function setHeaders($headers)
     {
         if (!is_array($headers)) {
-            throw new \InvalidArgumentException("headers must be an array");
+            throw new InvalidArgumentException("headers must be an array");
         }
         $this->headers = $headers;
         return $this;
@@ -383,13 +377,13 @@ class RollingCurl
 
     /**
      * @param array $options
-     * @throws \InvalidArgumentException
-     * @return RollingCurl
+     * @throws InvalidArgumentException
+     * @return RollingCurl_Fetcher
      */
     public function setOptions($options)
     {
         if (!is_array($options)) {
-            throw new \InvalidArgumentException("options must be an array");
+            throw new InvalidArgumentException("options must be an array");
         }
         $this->options = $options;
         return $this;
@@ -399,13 +393,13 @@ class RollingCurl
      * Override and add options
      *
      * @param array $options
-     * @throws \InvalidArgumentException
-     * @return RollingCurl
+     * @throws InvalidArgumentException
+     * @return RollingCurl_Fetcher
      */
     public function addOptions($options)
     {
         if (!is_array($options)) {
-            throw new \InvalidArgumentException("options must be an array");
+            throw new InvalidArgumentException("options must be an array");
         }
         $this->options = $options + $this->options;
         return $this;
@@ -427,13 +421,13 @@ class RollingCurl
      * automatically block further requests.
      *
      * @param int $count
-     * @throws \InvalidArgumentException
-     * @return RollingCurl
+     * @throws InvalidArgumentException
+     * @return RollingCurl_Fetcher
      */
     public function setSimultaneousLimit($count)
     {
         if (!is_int($count) || $count < 2) {
-            throw new \InvalidArgumentException("setSimultaneousLimit count must be an int >= 2");
+            throw new InvalidArgumentException("setSimultaneousLimit count must be an int >= 2");
         }
         $this->simultaneousLimit = $count;
         return $this;
@@ -461,7 +455,7 @@ class RollingCurl
      * If you pass $limit <= 0 you will get all the pending requests back
      *
      * @param int $limit
-     * @return Request[] May be empty
+     * @return RollingCurl_Request[] May be empty
      */
     private function getNextPendingRequests($limit = 1)
     {
@@ -479,7 +473,7 @@ class RollingCurl
     /**
      * Get the next pending request, or return null
      *
-     * @return null|Request
+     * @return null|RollingCurl_Request
      */
     private function getNextPendingRequest()
     {
@@ -495,7 +489,7 @@ class RollingCurl
      * This method creates a new array starting at the first un-processed
      * request, replaces the old queue and resets counters.
      *
-     * @return RollingCurl
+     * @return RollingCurl_Fetcher
      */
     public function prunePendingRequestQueue()
     {
@@ -536,7 +530,7 @@ class RollingCurl
      * idea to call this every few completed requests so you don't run
      * out of memory.
      *
-     * @return RollingCurl
+     * @return RollingCurl_Fetcher
      */
     public function clearCompleted()
     {

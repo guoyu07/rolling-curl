@@ -13,12 +13,10 @@
  * @link https://github.com/chuyskywalker/rolling-curl
  */
 
-namespace RollingCurl;
-
 /**
  * Class that represent a single curl request
  */
-class Request
+class RollingCurl_Request
 {
     /**
      * @var string
@@ -64,7 +62,7 @@ class Request
     /**
      * @param string $url
      * @param string $method
-     * @return \RollingCurl\Request
+     * @return RollingCurl_Request
      */
     function __construct($url, $method="GET")
     {
@@ -76,7 +74,7 @@ class Request
      * You may wish to store some "extra" info with this request, you can put any of that here.
      *
      * @param mixed $extraInfo
-     * @return \RollingCurl\Request
+     * @return RollingCurl_Request
      */
     public function setExtraInfo($extraInfo)
     {
@@ -94,7 +92,7 @@ class Request
 
     /**
      * @param array $headers
-     * @return \RollingCurl\Request
+     * @return RollingCurl_Request
      */
     public function setHeaders($headers)
     {
@@ -112,7 +110,7 @@ class Request
 
     /**
      * @param string $method
-     * @return \RollingCurl\Request
+     * @return RollingCurl_Request
      */
     public function setMethod($method)
     {
@@ -130,13 +128,13 @@ class Request
 
     /**
      * @param array $options
-     * @throws \InvalidArgumentException
-     * @return \RollingCurl\Request
+     * @throws InvalidArgumentException
+     * @return RollingCurl_Request
      */
     public function setOptions($options)
     {
         if (!is_array($options)) {
-            throw new \InvalidArgumentException("options must be an array");
+            throw new InvalidArgumentException("options must be an array");
         }
         $this->options = $options;
         return $this;
@@ -144,13 +142,13 @@ class Request
 
     /**
      * @param array $options
-     * @throws \InvalidArgumentException
-     * @return \RollingCurl\Request
+     * @throws InvalidArgumentException
+     * @return RollingCurl_Request
      */
     public function addOptions($options)
     {
         if (!is_array($options)) {
-            throw new \InvalidArgumentException("options must be an array");
+            throw new InvalidArgumentException("options must be an array");
         }
         $this->options = $options + $this->options;
         return $this;
@@ -166,7 +164,7 @@ class Request
 
     /**
      * @param string $postData
-     * @return \RollingCurl\Request
+     * @return RollingCurl_Request
      */
     public function setPostData($postData)
     {
@@ -184,7 +182,7 @@ class Request
 
     /**
      * @param int $responseErrno
-     * @return \RollingCurl\Request
+     * @return RollingCurl_Request
      */
     public function setResponseErrno($responseErrno)
     {
@@ -202,7 +200,7 @@ class Request
 
     /**
      * @param string $responseError
-     * @return \RollingCurl\Request
+     * @return RollingCurl_Request
      */
     public function setResponseError($responseError)
     {
@@ -220,7 +218,7 @@ class Request
 
     /**
      * @param array $responseInfo
-     * @return \RollingCurl\Request
+     * @return RollingCurl_Request
      */
     public function setResponseInfo($responseInfo)
     {
@@ -238,7 +236,7 @@ class Request
 
     /**
      * @param string $responseText
-     * @return \RollingCurl\Request
+     * @return RollingCurl_Request
      */
     public function setResponseText($responseText)
     {
@@ -256,7 +254,7 @@ class Request
 
     /**
      * @param string $url
-     * @return \RollingCurl\Request
+     * @return RollingCurl_Request
      */
     public function setUrl($url)
     {
